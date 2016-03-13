@@ -69,6 +69,8 @@ char FragmentShaderName[] = "../src/Shaders/Fragment.frag";
 int leafNumber = 0;
 int branchNumber = 0;
 
+////////////////////////////////////////////////////////
+///
 void initTexture()
 {
 		//generate as many textures as you need
