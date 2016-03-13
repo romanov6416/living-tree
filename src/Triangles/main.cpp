@@ -139,9 +139,9 @@ void init()
 	//initialize opengl buffers and variables inside of object
 	pLeaf->initGLBuffers(shaderProgram.programObject,"pos","nor","tex");
 
-	//initializa texture
+	//initialize texture
 	initTexture();
-	// initializa light
+	// initialize light
 	initLight();
 
 	// инициализация объектов для построения дерева (просто копирование указателей)
@@ -192,9 +192,7 @@ void display()
 	int lightPos = glGetUniformLocation(shaderProgram.programObject, "lightPos");
 	int lightCol = glGetUniformLocation(shaderProgram.programObject, "lightCol");
 
-
-	//cout << lightPos << " " << lightCol << endl;
-	//if there is some problem
+	//if there is some problem to exit
 	if (locMV<0 || locN<0 || locP<0 || texLoc <0 || locFlag<0 || lightPos<0 || lightCol<0)
 	{
 		//not all uniforms were allocated - show blue screen.
@@ -208,7 +206,6 @@ void display()
 
 	//camera matrix. camera is placed in point "eye" and looks at point "cen".
 	glm::mat4x4 viewMatrix = glm::lookAt(eye,cen,up);
-
 
 	// lightning
 	GLfloat material_diffuse[] = {1.0, 1.0, 1.0, 1.0};
@@ -224,11 +221,11 @@ void display()
 	glm::vec4 tmp(lightPosition, 1.0f);
 	tmp = viewMatrix * tmp;
 	glm::vec3 lightPos_camera;
-	for (int i = 0; i < 3; ++i) lightPos_camera[i] = tmp[i]; 
+	for (int i = 0; i < 3; ++i)
+        lightPos_camera[i] = tmp[i];
 
-	tree->draw(glm::mat4(), viewMatrix, projectionMatrix, lightPos_camera
-		, lightColor,
-		locMV, locN, locP, texLoc, locFlag, texId, lightPos, lightCol);
+	tree->draw(glm::mat4(), viewMatrix, projectionMatrix, lightPos_camera, lightColor,
+               locMV, locN, locP, texLoc, locFlag, texId, lightPos, lightCol);
 
 
 
@@ -361,6 +358,7 @@ void keyboard(unsigned char key, int mx, int my)
 		case 'f':
 		case 'F':
 		{
+            // left
 			glm::vec3 direction = cen - eye;
 			glm::vec3 right = glm::cross(direction, up);
 			right /= module(right); // normalization of right

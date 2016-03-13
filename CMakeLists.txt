@@ -12,7 +12,6 @@ link_directories(${LIB_DIR})
 set(SOURCE_FILES
         src/Triangles/Branch.cpp
         src/Triangles/Branch.h
-        src/Triangles/Fragment.frag
         src/Triangles/Leaf.cpp
         src/Triangles/Leaf.h
         src/Triangles/main.cpp
@@ -24,7 +23,7 @@ set(SOURCE_FILES
         src/Triangles/shaderprogram.cpp
         src/Triangles/shaderprogram.h
         src/Triangles/tree.cpp
-        src/Triangles/tree.h)
+        src/Triangles/tree.h src/Triangles/camera.cpp src/Triangles/camera.h src/Triangles/scene.h src/Triangles/scene.cpp)
 
 add_executable(task3 ${SOURCE_FILES})
 

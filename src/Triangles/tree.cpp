@@ -95,10 +95,10 @@ const float minHeight = 0.5;
 		 int lightPos, int lightCol)
 	{
 
-		//modelGlobalMatrix *= modelMatrix;
+		//modelGlobalMatrix *= model_matrix;
 		glm::mat4x4 drawModelMatrix = glm::scale(modelMatrix, 
 			glm::vec3(1.0f + height/500,height,1.0f + height/500) );
-		//modelViewMatrix consists of viewMatrix and modelMatrix
+		//modelViewMatrix consists of viewMatrix and model_matrix
 		glm::mat4x4 modelViewMatrix = viewMatrix*drawModelMatrix;
 		//calculate normal matrix 
 		glm::mat4x4 normalMatrix = glm::inverseTranspose(modelViewMatrix);
@@ -187,7 +187,7 @@ const float minHeight = 0.5;
 			 glm::vec3(0.0f, 1.0f, 0.0f));
 		// делаем лист маленьким
 		drawModelMatrix = glm::scale(drawModelMatrix, 0.3f*glm::vec3(1.0f,1.0f,1.0f));
-		//modelViewMatrix consists of viewMatrix and modelMatrix
+		//modelViewMatrix consists of viewMatrix and model_matrix
 		glm::mat4x4 modelViewMatrix = viewMatrix*drawModelMatrix;
 		//calculate normal matrix 
 		glm::mat4x4 normalMatrix = glm::inverseTranspose(modelViewMatrix);
