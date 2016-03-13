@@ -24,13 +24,7 @@ set(SOURCE_FILES
         src/Triangles/shaderprogram.cpp
         src/Triangles/shaderprogram.h
         src/Triangles/tree.cpp
-        src/Triangles/tree.h
-#        src/Triangles/tree.h.gch
-#        src/Triangles/Triangles.vcxproj
-#        src/Triangles/Triangles.vcxproj.filters
-#        src/Triangles/Triangles.vcxproj.user
-#        src/Triangles/Vertex.vert
-        )
+        src/Triangles/tree.h)
 
 add_executable(task3 ${SOURCE_FILES})
 
