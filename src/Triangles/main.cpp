@@ -19,10 +19,11 @@ using namespace std;
 #include "Leaf.h"
 #include "tree.h"
 
+#include "camera.h"
+
 //model for drawing: a square from two triangles
 Branch* pBranch = nullptr;
 Leaf* pLeaf = nullptr;
-
 BranchNode * tree = nullptr;
 
 //struct for loading shaders
@@ -34,6 +35,9 @@ int windowHeight = 600;
 
 //last mouse coordinates
 int mouseX,mouseY;
+Camera camera(glm::vec3(0.0f, 0.0f, 20.0f),
+			  glm::vec3(0.0f, 7.0f, 0.0f),
+			  glm::vec3(0.0f, 1.0f, 0.0f));
 
 //camera position
 glm::vec3 eye(0,0,20);
@@ -119,7 +123,7 @@ void init()
 		glDepthFunc(GL_LESS);
 		glDepthMask(GL_TRUE);
 	//initialize shader program
-	shaderProgram.init(VertexShaderName,FragmentShaderName);
+	shaderProgram.init(VertexShaderName, FragmentShaderName);
 	//use this shader program
 	glUseProgram(shaderProgram.programObject);
 
@@ -205,7 +209,7 @@ void display()
 	}
 
 	//camera matrix. camera is placed in point "eye" and looks at point "cen".
-	glm::mat4x4 viewMatrix = glm::lookAt(eye,cen,up);
+//	glm::mat4x4 viewMatrix = glm::lookAt(eye,cen,up);
 
 	// lightning
 	GLfloat material_diffuse[] = {1.0, 1.0, 1.0, 1.0};
@@ -219,12 +223,12 @@ void display()
 
 	// источник света в координатах камеры
 	glm::vec4 tmp(lightPosition, 1.0f);
-	tmp = viewMatrix * tmp;
+	tmp = camera.get_view_matrix() * tmp;
 	glm::vec3 lightPos_camera;
 	for (int i = 0; i < 3; ++i)
         lightPos_camera[i] = tmp[i];
-
-	tree->draw(glm::mat4(), viewMatrix, projectionMatrix, lightPos_camera, lightColor,
+	glm::mat4x4 view_matrix = camera.get_view_matrix();
+	tree->draw(glm::mat4(), view_matrix, projectionMatrix, lightPos_camera, lightColor,
                locMV, locN, locP, texLoc, locFlag, texId, lightPos, lightCol);
 
 
@@ -244,69 +248,6 @@ void update()
 	glutPostRedisplay();
 }
 
-enum CameraDirection
-{
-	ZOOM_OUT,
-	ZOOM_IN,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-};
-
-void updateCameraPlace(CameraDirection direction)
-{
-	const float STEP_VER = M_PI / 36;
-	const float STEP_HOR = M_PI / 36;
-	const float MIN_R = 1.5f;
-	const float MAX_R = 200.0f;
-
-	float x = eye.x - cen.x;
-	float y = eye.y - cen.y;
-	float z = eye.z - cen.z;
-
-	float r = sqrt(x*x + y*y + z*z);
-	float fi = atan2(z, x);
-	float pci = asin(y / r);
-	if (up.y < 0)
-	{
-		fi += fi > 0 ? -M_PI : M_PI;
-		pci = pci > 0 ? M_PI - pci : -M_PI - pci;
-	}
-
-	switch (direction)
-	{
-		case ZOOM_OUT:
-			if (r < MAX_R) ++r;
-			break;
-		case ZOOM_IN:
-			if (r > MIN_R) --r;
-			break;
-		case UP:
-			pci += STEP_VER;
-			if (pci > M_PI) pci -=2*M_PI;				
-			break;
-		case DOWN:
-			pci -= STEP_VER;
-			if (pci < -M_PI) pci += 2*M_PI;
-			break;
-		case LEFT:
-			fi += STEP_HOR;
-			if (fi > M_PI) fi -= 2*M_PI;
-			break;
-		case RIGHT:
-			fi -= STEP_HOR;
-			if (fi < -M_PI) fi += 2*M_PI;
-			break;
-	}
-	eye.x = cen.x + r * cos(pci) * cos(fi);
-	eye.z = cen.z + r * cos(pci) * sin(fi);
-	eye.y = cen.y + r * sin(pci);
-	up.x = cos(pci + M_PI/2) * cos(fi);
-	up.z = cos(pci + M_PI/2) * sin(fi);
-	up.y = sin(pci + M_PI/2);
-}
-   
 
 inline float module(const glm::vec3 & v)
 {
@@ -321,72 +262,44 @@ void keyboard(unsigned char key, int mx, int my)
 		case ' ':
 			useTexture = !useTexture;
 			break;
-		case 'q':
-		case 'Q':
-			updateCameraPlace(ZOOM_OUT);
+		case 'q': case 'Q':
+			camera.zoom_out(1.0f);
 			break;
-		case 'e':
-		case 'E':
-			updateCameraPlace(ZOOM_IN);
+		case 'e': case 'E':
+			camera.zoom_in(1.0f);
 			break;
-		case 'a':
-		case 'A':
-			updateCameraPlace(LEFT);
+		case 'a': case 'A':
+			camera.rotate_left(M_PI/8);
 			break;
-		case 'd':
-		case 'D':
-			updateCameraPlace(RIGHT);
-			break;	
-		case 'w':
-		case 'W':
-			updateCameraPlace(UP);
+		case 'd': case 'D':
+			camera.rotate_right(M_PI/8);
 			break;
-		case 's':
-		case 'S':
-			updateCameraPlace(DOWN);
+		case 'w': case 'W':
+			camera.rotate_up(M_PI/8);
 			break;
-		case 't':
-		case 'T':
-			eye += up / module(up);
-			cen += up / module(up);
+		case 's': case 'S':
+			camera.rotate_down(M_PI/8);
 			break;
-		case 'g':
-		case 'G':
-			eye -= up;
-			cen -= up;
+		case 't': case 'T':
+			camera.shift_up(3);
 			break;
-		case 'f':
-		case 'F':
-		{
-            // left
-			glm::vec3 direction = cen - eye;
-			glm::vec3 right = glm::cross(direction, up);
-			right /= module(right); // normalization of right
-			eye -= right;
-			cen -= right;
+		case 'g': case 'G':
+			camera.shift_down(3);
 			break;
-		}
-		case 'h':
-		case 'H':
-		{
-			glm::vec3 direction = cen - eye;
-			glm::vec3 right = glm::cross(direction, up);
-			right /= module(right); // normalization of right
-			eye += right;
-			cen += right;
+		case 'f': case 'F':
+			camera.shift_left(3);
 			break;
-		}
+		case 'h': case 'H':
+			camera.shift_right(3);
+			break;
 		case '*':
 			tree->grow(branchNumber, leafNumber);
 			cout << "Branchs = " << branchNumber << endl;
 			cout << "Leafs = " << leafNumber << endl;
 			break;
+		default:
+			break;
 	}
-	//cout << "\'" << key << "\' was pressed" << endl; 
-	//cout << eye.x << " " << eye.y << " " << eye.z << endl;
-	//cout << r << " " << fi << " " << pci << endl; 
-	//cout << eye.x << " " << eye.y << " " << eye.z << endl;
-
 }
 
 /////////////////////////////////////////////////////////////////////////
