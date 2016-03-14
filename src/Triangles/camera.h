@@ -9,6 +9,8 @@
 #include <glm/gtc/matrix_inverse.hpp>
 
 class Camera {
+    static Camera * instance;
+
     // global position (radius-vector)
     glm::vec3 pos;
     // up direction
@@ -37,6 +39,8 @@ public:
            const glm::vec3 & init_up,
            const glm::vec3 & init_cen);
 
+    static Camera * get_instance();
+
     // shift_<dir> - shift camera on direction <dir> on "step"
     void shift_up(const float step);
     void shift_down(const float step);
@@ -57,4 +61,5 @@ public:
         return this->view_matrix;
     }
 
+    ~Camera();
 };

@@ -3,6 +3,8 @@
 //
 #include "camera.h"
 
+Camera * Camera::instance = nullptr;
+
 void Camera::shift_up(const float step) {
     this->pos += step * this->up;
     this->cen += step * this->up;
@@ -104,8 +106,18 @@ void Camera::update_polar() {
 Camera::Camera(const glm::vec3 & init_pos, const glm::vec3 & init_up,
                const glm::vec3 & init_cen) :
         pos(init_pos), cen(init_cen) {
+    if (instance == nullptr)
+        instance = this;
     this->up = glm::normalize(init_up);
-    const glm::vec3 & tmp_right = glm::cross(cen - pos, up);
-    this->right = glm::normalize(tmp_right);
+    this->right = glm::normalize(glm::cross(cen - pos, up));
+    this->update_polar();
     this->update_view_matrix();
+}
+
+Camera * Camera::get_instance() {
+    return Camera::instance;
+}
+
+Camera::~Camera() {
+    this->instance = nullptr;
 }

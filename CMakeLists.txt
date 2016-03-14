@@ -23,7 +23,13 @@ set(SOURCE_FILES
         src/Triangles/shaderprogram.cpp
         src/Triangles/shaderprogram.h
         src/Triangles/tree.cpp
-        src/Triangles/tree.h src/Triangles/camera.cpp src/Triangles/camera.h src/Triangles/scene.h src/Triangles/scene.cpp)
+        src/Triangles/tree.h
+        src/Triangles/camera.cpp
+        src/Triangles/camera.h
+        src/Triangles/scene.h
+        src/Triangles/scene.cpp
+        src/Triangles/event_handler.h
+        src/Triangles/event_handler.cpp)
 
 add_executable(task3 ${SOURCE_FILES})
 

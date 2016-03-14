@@ -249,10 +249,10 @@ void update()
 }
 
 
-inline float module(const glm::vec3 & v)
-{
-	return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
-}
+//inline float module(const glm::vec3 & v)
+//{
+//	return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+//}
 
 int n = 0;
 void keyboard(unsigned char key, int mx, int my)
@@ -305,21 +305,25 @@ void keyboard(unsigned char key, int mx, int my)
 /////////////////////////////////////////////////////////////////////////
 ///is called when mouse button is pressed
 ///TODO: place camera rotations in this function
-void mouse(int button, int mode,int posx, int posy)
-{
-	if (button==GLUT_LEFT_BUTTON)
-	{
-		if (mode == GLUT_DOWN)
-		{
-			mouseX = posx; mouseY = posy;
+void mouse(int button, int mode, int posx, int posy) {
+	cout << button << " " << mode << " " << posx << " " << posy << " " << endl;
+	if (button == GLUT_LEFT_BUTTON) {
+		if (mode == GLUT_DOWN) {
+			mouseX = posx;
+			mouseY = posy;
 		}
-		else
-		{
-			mouseX = -1; mouseY = -1;
+		else {
+			mouseX = -1;
+			mouseY = -1;
 		}
 	}
-	
 }
+
+void active_mouse(int posx, int posy) {
+	cout << posx << " " << posy << endl;
+	return;
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 ///this function is used in case of InitializationError
@@ -354,6 +358,9 @@ int main (int argc, char* argv[])
 	glutIdleFunc(update);
 	glutKeyboardFunc(keyboard);
 	glutMouseFunc(mouse);
+	glutMotionFunc(active_mouse);
+
+
 
 	glewInit();
 	const char * slVer = (const char *) glGetString ( GL_SHADING_LANGUAGE_VERSION );
