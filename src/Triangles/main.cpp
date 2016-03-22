@@ -366,12 +366,9 @@ int main (int argc, char* argv[])
 	const char * slVer = (const char *) glGetString ( GL_SHADING_LANGUAGE_VERSION );
 	cout << "GLSL Version: " << slVer << endl;
 
-	try
-	{
-	init();
-	}
-	catch (const char *str)
-	{
+	try {
+		init();
+	} catch (const char *str) {
 		cout << "Error During Initialiation: " << str << endl;
 		delete pBranch;
 		delete pLeaf;

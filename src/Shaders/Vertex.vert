@@ -27,7 +27,7 @@ void main()
 	gl_Position = modelViewProjectionMatrix*vec4(pos.xyz,1);
 
 	VertexOut.position = vec3(modelViewMatrix*vec4(pos.xyz,1));
-	VertexOut.normal = vec3(normalMatrix*vec4(nor.xyz,1));	
+	VertexOut.normal = vec3(normalMatrix*vec4(nor.xyz,1));
 	VertexOut.texcoord = vec2(tex.xy);
 
 	VertexOut.position = normalize(VertexOut.position);
