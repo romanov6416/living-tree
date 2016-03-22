@@ -26,12 +26,13 @@ out vec4 fragColor;
 
 //TODO: you should use VertexIn.normal value to evaluate Phong Lightning for this pixel
 // 
-		
+
 void main()
 {
 	if (useTexture>0)
 		//take color from texture using texture2D
-		fragColor = vec4(texture(textureSampler,VertexIn.texcoord.xy).rgb,length(VertexIn.normal)*length(VertexIn.position));
+		fragColor = vec4(texture(textureSampler,VertexIn.texcoord.xy).rgb,
+						 length(VertexIn.normal)*length(VertexIn.position));
 	else
 	{
 		//use default color (brown)
